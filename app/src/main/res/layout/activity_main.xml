@@ -4,6 +4,11 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-
+    <Button
+        android:id="@+id/b_catch_sheet_phrase"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Mic" />
 
 </RelativeLayout>

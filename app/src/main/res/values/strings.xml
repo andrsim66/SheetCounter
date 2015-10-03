@@ -3,4 +3,9 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <string name="dialog_title">Say sh@#t phrase you want to count</string>
+    <string name="dialog_caught_title">Caught phrase</string>
+    <string name="dialog_speak">Speak</string>
+
 </resources>
