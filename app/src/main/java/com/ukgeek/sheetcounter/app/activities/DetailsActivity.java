@@ -16,6 +16,7 @@ import java.util.ArrayList;
 public class DetailsActivity extends AppCompatActivity {
 
     private TextView mTvCount;
+    private TextView mTvPhrase;
     private TextView mTvText;
 
     private ArrayList<String> mText;
@@ -41,6 +42,7 @@ public class DetailsActivity extends AppCompatActivity {
 
     private void initViews() {
         mTvCount = (TextView) findViewById(R.id.tv_matches_count);
+        mTvPhrase = (TextView) findViewById(R.id.tv_phrase);
         mTvText = (TextView) findViewById(R.id.tv_result_text);
     }
 
@@ -49,6 +51,8 @@ public class DetailsActivity extends AppCompatActivity {
         Logger.d(mPhrase);
         Logger.d(mText.toString());
         if (mPhrase != null && mText != null && mText.size() > 0) {
+            mTvPhrase.setText(mPhrase);
+
             StringBuilder sb = new StringBuilder();
 
             for (int i = 0; i < mText.size(); i++) {
