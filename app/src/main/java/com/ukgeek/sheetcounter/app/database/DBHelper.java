@@ -6,8 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by voronsky on 03.10.15.
@@ -45,21 +45,18 @@ public class DBHelper extends SQLiteOpenHelper {
         db.insertWithOnConflict(TABLE_NAME, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
-    public HashMap<Speech, Speech> selectAllRecords(SQLiteDatabase db) {
-        HashMap<Speech, Speech> records = new HashMap<>();
+    public ArrayList<Speech> selectAllRecords(SQLiteDatabase db) {
+        ArrayList<Speech> records = new ArrayList<>();
 
         Cursor c = db.query(TABLE_NAME, null, null, null, null, null, null);
         try {
             if (c != null) {
                 if (c.moveToFirst()) {
                     do {
-                        Speech badWord = new Speech();
                         Speech speech = new Speech();
-
-                        badWord.setBadWord(c.getString(c.getColumnIndexOrThrow(BAD_WORD)));
+                        speech.setBadWord(c.getString(c.getColumnIndexOrThrow(BAD_WORD)));
                         speech.setSpeech(c.getString(c.getColumnIndexOrThrow(SPEECH)));
-
-                        records.put(badWord, speech);
+                        records.add(speech);
                     } while (c.moveToNext());
                 }
             }
