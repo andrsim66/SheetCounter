@@ -1,4 +1,4 @@
-package com.ukgeek.sheetcounter.app;
+package com.ukgeek.sheetcounter.app.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,12 +7,16 @@ import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.ukgeek.sheetcounter.app.R;
+import com.ukgeek.sheetcounter.app.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -32,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private String phrase;
     private String text;
+    private ArrayList<String> lText;
 
     private MaterialDialog mListenDialog;
     private MaterialDialog mInfoDialog;
@@ -252,21 +257,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String findStr = phrase;
         int count = 0;
 
-        StringTokenizer st = new StringTokenizer(str, " ");
-        ArrayList<String> list = new ArrayList<>();
+        makeList(str);
+        Logger.d(lText.toString());
 
-        while (st.hasMoreElements()) {
-            list.add(st.nextElement().toString());
-        }
-
-        Logger.d(list.toString());
-
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).equalsIgnoreCase(findStr))
+        for (int i = 0; i < lText.size(); i++) {
+            if (lText.get(i).equalsIgnoreCase(findStr))
                 count++;
         }
 
         Logger.d("count=" + count);
+        showDetails(count);
+    }
+
+    private void makeList(String str) {
+        StringTokenizer st = new StringTokenizer(str, " ");
+        lText = new ArrayList<>();
+
+        while (st.hasMoreElements()) {
+            lText.add(st.nextElement().toString());
+        }
+
+    }
+
+    private void showDetails(int count) {
+        Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
+        intent.putExtra("count", count);
+        intent.putExtra("phrase", phrase);
+        intent.putExtra("text", lText);
+        startActivity(intent);
     }
 
     @Override
@@ -319,5 +337,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
         return message;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_history, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_history) {
+            phrase = "in";
+            text = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+            makeList(text);
+            showDetails(333);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
