@@ -12,4 +12,8 @@
     <string name="matches_found">Matches found:</string>
     <string name="title_activity_details">DetailsActivity</string>
 
+    <!--List Items-->
+    <string name="bad_word">Bad word: </string>
+    <string name="speech_text">Speech text</string>
+
 </resources>
