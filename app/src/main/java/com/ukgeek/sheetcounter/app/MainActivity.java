@@ -8,11 +8,11 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -21,7 +21,7 @@ import java.util.StringTokenizer;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
         RecognitionListener {
 
-    private Button mBCatchPhrase;
+    private FloatingActionButton mFabCatchPhrase;
     private ProgressBar progressBar;
 
     private SpeechRecognizer speech;
@@ -32,6 +32,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private String phrase;
     private String text;
+
+    private MaterialDialog mListenDialog;
+    private MaterialDialog mInfoDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,18 +59,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initViews() {
-        mBCatchPhrase = (Button) findViewById(R.id.b_catch_sheet_phrase);
+        mFabCatchPhrase = (FloatingActionButton) findViewById(R.id.fab_catch_sheet_phrase);
     }
 
     private void setupViews() {
-        mBCatchPhrase.setOnClickListener(this);
+        mFabCatchPhrase.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.b_catch_sheet_phrase) {
+        if (view.getId() == R.id.fab_catch_sheet_phrase) {
 //            showProgress1();
-            showProgressDeterminateDialog(R.string.dialog_title);
+            showProgressDeterminateDialog(R.string.dialog_wait);
         }
     }
 
@@ -87,9 +90,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-
-    public void showProgressDeterminateDialog(int title) {
-        MaterialDialog dialog = new MaterialDialog.Builder(this)
+    public void showProgressDeterminateDialog(final int title) {
+        mListenDialog = new MaterialDialog.Builder(this)
                 .title(title)
                 .contentGravity(GravityEnum.CENTER)
                 .progress(false, 10, false)
@@ -102,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .dismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialogInterface) {
+                        Logger.d("onDismiss " + title);
                         stopSpeech();
                     }
                 })
@@ -109,14 +112,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
+                        dialog.dismiss();
                         stopSpeech();
                     }
                 })
                 .build();
 
-        progressBar = dialog.getProgressBar();
-
-        dialog.show();
+        progressBar = mListenDialog.getProgressBar();
+        Logger.d("show listen");
+        mListenDialog.show();
     }
 
     private void startSpeech() {
@@ -132,7 +136,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void showBasic(String phrase) {
-        new MaterialDialog.Builder(this)
+        Logger.d("show basic");
+        mInfoDialog = new MaterialDialog.Builder(this)
                 .title(R.string.dialog_caught_title)
                 .content(phrase)
                 .positiveText(android.R.string.yes)
@@ -141,12 +146,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onPositive(MaterialDialog dialog) {
                         isSpeech = true;
-                        showProgressDeterminateDialog(R.string.dialog_speak);
+                        showProgressDeterminateDialog(R.string.dialog_wait);
                     }
 
                     @Override
                     public void onNegative(MaterialDialog dialog) {
-                        showProgressDeterminateDialog(R.string.dialog_title);
+                        showProgressDeterminateDialog(R.string.dialog_wait);
                     }
                 })
                 .show();
@@ -168,20 +173,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onEndOfSpeech() {
         Logger.d("onEndOfSpeech");
         progressBar.setIndeterminate(true);
-//        toggleButton.setChecked(false);
+        if (isSpeech)
+            mListenDialog.dismiss();
     }
+
+
+    String mErrorMessage;
 
     @Override
     public void onError(int errorCode) {
-        String errorMessage = getErrorText(errorCode);
-        Logger.d("FAILED " + errorMessage);
-//        returnedText.setText(errorMessage);
+        mErrorMessage = getErrorText(errorCode);
+        Logger.d("FAILED " + mErrorMessage);
+        mListenDialog.getProgressBar().setIndeterminate(false);
+
+        if (mErrorMessage != null && mErrorMessage.length() > 0)
+            mListenDialog.setContent(mErrorMessage);
+//        returnedText.setText(mErrorMessage);
 //        toggleButton.setChecked(false);
     }
 
     @Override
     public void onEvent(int arg0, Bundle arg1) {
-        Logger.d("onEvent");
+        Logger.d("onEvent" + arg0);
     }
 
     @Override
@@ -192,6 +205,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onReadyForSpeech(Bundle arg0) {
         Logger.d("onReadyForSpeech");
+        if (isSpeech)
+            mListenDialog.setTitle(R.string.dialog_speak);
+        else
+            mListenDialog.setTitle(R.string.dialog_title);
+
     }
 
     @Override
@@ -202,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String text = matches.get(0);
         Logger.d(text);
         if (!isSpeech) {
+            mListenDialog.dismiss();
             showBasic(text);
             phrase = text;
         } else {

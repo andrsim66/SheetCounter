@@ -4,11 +4,16 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/b_catch_sheet_phrase"
+    <com.getbase.floatingactionbutton.FloatingActionButton
+        xmlns:fab="http://schemas.android.com/apk/res-auto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="Mic" />
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp"
+        fab:fab_icon="@drawable/ic_mic_white_24dp"
+        fab:fab_colorNormal="@color/logo"
+        fab:fab_colorPressed="@color/logo_dark"
+        android:id="@+id/fab_catch_sheet_phrase" />
 
 </RelativeLayout>

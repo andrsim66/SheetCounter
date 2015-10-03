@@ -6,6 +6,9 @@
 
     <string name="dialog_title">Say sh@#t phrase you want to count</string>
     <string name="dialog_caught_title">Caught phrase</string>
+    <string name="dialog_wait">Wait</string>
     <string name="dialog_speak">Speak</string>
+
+    <string name="matches_found">Matches found:</string>
 
 </resources>
