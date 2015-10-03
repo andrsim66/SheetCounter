@@ -4,6 +4,12 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-
+    <ImageView
+        android:id="@+id/click_mic"
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:src="@drawable/ic_mic_black_24dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
 
 </RelativeLayout>
