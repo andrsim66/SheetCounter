@@ -28,7 +28,7 @@ public class HistoryActivity extends ActionBarActivity implements AdapterView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.history_layout);
+        setContentView(R.layout.activity_history);
 
         initView();
         setupViews();

@@ -30,15 +30,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FloatingActionButton mFabCatchPhrase;
     private ProgressBar mProgressBar;
     private MaterialDialog mListenDialog;
-    String mErrorMessage;
 
-    private SpeechRecognizer speech;
-
+    private SpeechRecognizer mSpeechRecognizer;
     private Intent recognizerIntent;
 
-    private boolean isSpeech;
-
-    private String phrase;
+    private String mErrorMessage;
+    private String mPhrase;
+    private boolean mIsSpeech;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +45,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         initViews();
         setupViews();
-
-//        speech = SpeechRecognizer.createSpeechRecognizer(this);
-//        speech.setRecognitionListener(this);
-//
-//        setRecognizerIntent();
     }
 
     private void initViews() {
@@ -82,8 +75,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onResume() {
         super.onResume();
-        phrase = null;
-        isSpeech = false;
+        mPhrase = null;
+        mIsSpeech = false;
         restartSpeech();
         setRecognizerIntent();
     }
@@ -91,8 +84,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
-        if (speech != null) {
-            speech.destroy();
+        if (mSpeechRecognizer != null) {
+            mSpeechRecognizer.destroy();
             Logger.d("destroy");
         }
 
@@ -134,13 +127,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void startSpeech() {
         mProgressBar.setVisibility(View.VISIBLE);
         mProgressBar.setIndeterminate(true);
-        speech.startListening(recognizerIntent);
+        mSpeechRecognizer.startListening(recognizerIntent);
     }
 
     private void stopSpeech() {
         mProgressBar.setIndeterminate(false);
         mProgressBar.setVisibility(View.INVISIBLE);
-        speech.stopListening();
+        mSpeechRecognizer.stopListening();
     }
 
     private void showConfirmationDialog(String phrase) {
@@ -153,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
-                        isSpeech = true;
+                        mIsSpeech = true;
                         showListeningDialog(R.string.dialog_wait);
                     }
 
@@ -181,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onEndOfSpeech() {
         Logger.d("onEndOfSpeech");
         mProgressBar.setIndeterminate(true);
-        if (isSpeech)
+        if (mIsSpeech)
             mListenDialog.dismiss();
     }
 
@@ -209,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onReadyForSpeech(Bundle arg0) {
         Logger.d("onReadyForSpeech");
-        if (isSpeech)
+        if (mIsSpeech)
             mListenDialog.setTitle(R.string.dialog_speak);
         else
             mListenDialog.setTitle(R.string.dialog_title);
@@ -223,14 +216,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
         String text = matches.get(0);
         Logger.d(text);
-        if (!isSpeech) {
+        if (!mIsSpeech) {
             mListenDialog.dismiss();
             showConfirmationDialog(text);
-            phrase = text;
+            mPhrase = text;
         } else {
-            int count = Utils.getCount(phrase, text);
-            Api.sendToServer(phrase, text);
-            Navigator.getInstance().showDetailsActivity(MainActivity.this, count, phrase, Utils.makeList(text));
+            int count = Utils.getCount(mPhrase, text);
+            Api.sendToServer(mPhrase, text);
+            Navigator.getInstance().showDetailsActivity(MainActivity.this, count, mPhrase, Utils.makeList(text));
         }
     }
 
@@ -241,12 +234,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void restartSpeech() {
-        if (speech != null) {
-            speech.cancel();
-            speech.destroy();
+        if (mSpeechRecognizer != null) {
+            mSpeechRecognizer.cancel();
+            mSpeechRecognizer.destroy();
         }
-        speech = SpeechRecognizer.createSpeechRecognizer(this);
-        speech.setRecognitionListener(this);
+        mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+        mSpeechRecognizer.setRecognitionListener(this);
     }
 
     public String getErrorText(int errorCode) {
