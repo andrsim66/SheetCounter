@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.afollestad.materialdialogs.GravityEnum;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private FloatingActionButton mFabCatchPhrase;
     private ProgressBar progressBar;
+    private ImageView linguaLogo;
 
     private SpeechRecognizer speech;
 
@@ -72,10 +74,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initViews() {
         mFabCatchPhrase = (FloatingActionButton) findViewById(R.id.fab_catch_sheet_phrase);
+        linguaLogo = (ImageView) findViewById(R.id.linguaLogo);
     }
 
     private void setupViews() {
         mFabCatchPhrase.setOnClickListener(this);
+        linguaLogo.setImageAlpha(45);
     }
 
     @Override
