@@ -1,7 +1,7 @@
 package com.ukgeek.sheetcounter.app;
 
 import com.ukgeek.sheetcounter.app.database.DBHelper;
-import com.ukgeek.sheetcounter.app.database.Speech;
+import com.ukgeek.sheetcounter.app.database.SpeechItem;
 
 /**
  * Created by voronsky on 03.10.15.
@@ -10,7 +10,7 @@ public class SingletonDBAccess {
 
     private static SingletonDBAccess mInstance = null;
     private DBHelper dbh;
-    private Speech speech;
+    private SpeechItem speech;
 
     public static SingletonDBAccess getInstance() {
         if (mInstance == null) {
@@ -27,11 +27,11 @@ public class SingletonDBAccess {
         this.dbh = dbh;
     }
 
-    public Speech getSpeech() {
+    public SpeechItem getSpeech() {
         return speech;
     }
 
-    public void setSpeech(Speech speech) {
+    public void setSpeech(SpeechItem speech) {
         this.speech = speech;
     }
 }

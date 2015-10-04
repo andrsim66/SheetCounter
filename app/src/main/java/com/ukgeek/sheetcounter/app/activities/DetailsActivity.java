@@ -84,6 +84,7 @@ public class DetailsActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_history) {
+            startActivity(new Intent(DetailsActivity.this, HistoryActivity.class));
             return true;
         }
 

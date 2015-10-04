@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by voronsky on 03.10.15.
@@ -38,22 +37,22 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insertSpeech(SQLiteDatabase db, Speech speech) {
+    public void insertSpeech(SQLiteDatabase db, SpeechItem speech) {
         ContentValues cv = new ContentValues();
         cv.put(BAD_WORD, speech.getBadWord());
         cv.put(SPEECH, speech.getSpeech());
         db.insertWithOnConflict(TABLE_NAME, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
-    public ArrayList<Speech> selectAllRecords(SQLiteDatabase db) {
-        ArrayList<Speech> records = new ArrayList<>();
+    public ArrayList<SpeechItem> selectAllRecords(SQLiteDatabase db) {
+        ArrayList<SpeechItem> records = new ArrayList<>();
 
         Cursor c = db.query(TABLE_NAME, null, null, null, null, null, null);
         try {
             if (c != null) {
                 if (c.moveToFirst()) {
                     do {
-                        Speech speech = new Speech();
+                        SpeechItem speech = new SpeechItem();
                         speech.setBadWord(c.getString(c.getColumnIndexOrThrow(BAD_WORD)));
                         speech.setSpeech(c.getString(c.getColumnIndexOrThrow(SPEECH)));
                         records.add(speech);

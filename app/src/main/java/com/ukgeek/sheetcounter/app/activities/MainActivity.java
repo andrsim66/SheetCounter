@@ -2,6 +2,7 @@ package com.ukgeek.sheetcounter.app.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -16,8 +17,14 @@ import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.ukgeek.sheetcounter.app.R;
+import com.ukgeek.sheetcounter.app.utils.Api;
 import com.ukgeek.sheetcounter.app.utils.Logger;
 
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.StringTokenizer;
@@ -280,11 +287,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void showDetails(int count) {
+//        sendToServer();
         Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
         intent.putExtra("count", count);
         intent.putExtra("phrase", phrase);
         intent.putExtra("text", lText);
         startActivity(intent);
+    }
+
+    private void sendToServer() {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                try {
+                    Logger.d(Api.send(phrase, text) + "");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                } catch (KeyManagementException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }.execute();
     }
 
     @Override
@@ -353,7 +381,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             phrase = "in";
             text = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
             makeList(text);
-            showDetails(333);
+//            showDetails(333);
+            startActivity(new Intent(MainActivity.this, HistoryActivity.class));
             return true;
         }
 

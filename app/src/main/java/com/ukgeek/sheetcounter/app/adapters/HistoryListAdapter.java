@@ -1,5 +1,6 @@
 package com.ukgeek.sheetcounter.app.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,20 +9,20 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.ukgeek.sheetcounter.app.R;
-import com.ukgeek.sheetcounter.app.database.Speech;
+import com.ukgeek.sheetcounter.app.database.SpeechItem;
 
 import java.util.List;
 
 /**
  * Created by voronsky on 03.10.15.
  */
-public class HistoryListAdapter extends ArrayAdapter<Speech> {
+public class HistoryListAdapter extends ArrayAdapter<SpeechItem> {
 
     private Context mContext;
     private int mLayoutResourceId;
 
-    public HistoryListAdapter(Context context, int layoutResourceId, List<Speech> speeches) {
-        super(context, layoutResourceId,speeches);
+    public HistoryListAdapter(Context context, int layoutResourceId, List<SpeechItem> speeches) {
+        super(context, layoutResourceId, speeches);
         this.mContext = context;
         this.mLayoutResourceId = layoutResourceId;
     }
@@ -39,8 +40,7 @@ public class HistoryListAdapter extends ArrayAdapter<Speech> {
         final ViewHolder holder;
 
         if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater)
-                    mContext.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+            LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
             convertView = inflater.inflate(mLayoutResourceId, null, false);
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
@@ -48,7 +48,7 @@ public class HistoryListAdapter extends ArrayAdapter<Speech> {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        Speech speech = getItem(position);
+        SpeechItem speech = getItem(position);
         holder.badWordHistory.setText(speech.getBadWord());
 
         return convertView;
@@ -60,7 +60,7 @@ public class HistoryListAdapter extends ArrayAdapter<Speech> {
     }
 
     @Override
-    public Speech getItem(int position) {
-        return super.getItem(super.getCount() - position - 1);
+    public SpeechItem getItem(int position) {
+        return super.getItem(position);
     }
 }

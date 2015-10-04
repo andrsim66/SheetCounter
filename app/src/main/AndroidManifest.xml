@@ -3,6 +3,7 @@
     package="com.ukgeek.sheetcounter.app">
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -19,6 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.DetailsActivity"/>
+        <activity android:name=".activities.HistoryActivity"/>
     </application>
 
 </manifest>
