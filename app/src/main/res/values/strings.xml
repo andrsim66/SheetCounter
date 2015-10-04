@@ -9,11 +9,12 @@
     <string name="dialog_wait">Wait</string>
     <string name="dialog_speak">Speak</string>
 
-    <string name="matches_found">Matches found:</string>
-    <string name="title_activity_details">DetailsActivity</string>
+    <string name="matches_found">matches found</string>
 
-    <!--List Items-->
-    <string name="bad_word">Bad word: </string>
-    <string name="speech_text">Speech text</string>
+    <string name="tap">Tap here to start</string>
 
+    <string name="typeface_roboto_thin">Roboto-Thin</string>
+    <string name="typeface_roboto_light">Roboto-Light</string>
+    <string name="typeface_roboto_regular">Roboto-Regular</string>
+    <string name="typeface_roboto_medium">Roboto-Medium</string>
 </resources>

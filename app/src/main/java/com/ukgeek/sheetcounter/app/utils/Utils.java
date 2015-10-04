@@ -1,6 +1,11 @@
 package com.ukgeek.sheetcounter.app.utils;
 
+import android.content.Context;
+import android.widget.TextView;
+
+import com.ukgeek.sheetcounter.app.R;
 import com.ukgeek.sheetcounter.app.database.SpeechItem;
+import com.ukgeek.sheetcounter.app.managers.ManagerTypeface;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -76,5 +81,23 @@ public class Utils {
             }
         }
         return sb.toString();
+    }
+
+    public static void setTypefaceRobotoRegular(Context context, TextView... textViews) {
+        if (textViews != null && textViews.length > 0) {
+            for (int i = 0; i < textViews.length; i++) {
+                textViews[i].setTypeface(
+                        ManagerTypeface.getTypeface(context, R.string.typeface_roboto_regular));
+            }
+        }
+    }
+
+    public static void setTypefaceRobotoLight(Context context, TextView... textViews) {
+        if (textViews != null && textViews.length > 0) {
+            for (int i = 0; i < textViews.length; i++) {
+                textViews[i].setTypeface(
+                        ManagerTypeface.getTypeface(context, R.string.typeface_roboto_light));
+            }
+        }
     }
 }

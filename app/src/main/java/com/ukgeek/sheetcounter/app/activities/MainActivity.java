@@ -11,11 +11,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.ukgeek.sheetcounter.app.R;
+import com.ukgeek.sheetcounter.app.managers.ManagerTypeface;
 import com.ukgeek.sheetcounter.app.utils.Api;
 import com.ukgeek.sheetcounter.app.utils.Logger;
 import com.ukgeek.sheetcounter.app.utils.Navigator;
@@ -30,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FloatingActionButton mFabCatchPhrase;
     private ProgressBar mProgressBar;
     private MaterialDialog mListenDialog;
+    private TextView mTvTap;
 
     private SpeechRecognizer mSpeechRecognizer;
     private Intent recognizerIntent;
@@ -49,10 +52,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initViews() {
         mFabCatchPhrase = (FloatingActionButton) findViewById(R.id.fab_catch_sheet_phrase);
+        mTvTap = (TextView) findViewById(R.id.tv_tap);
     }
 
     private void setupViews() {
         mFabCatchPhrase.setOnClickListener(this);
+        Utils.setTypefaceRobotoRegular(MainActivity.this, mTvTap);
     }
 
     private void setRecognizerIntent() {
@@ -96,6 +101,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .title(title)
                 .contentGravity(GravityEnum.CENTER)
                 .progress(false, 10, false)
+                .typeface(ManagerTypeface.getTypeface(MainActivity.this, R.string.typeface_roboto_medium),
+                        ManagerTypeface.getTypeface(MainActivity.this, R.string.typeface_roboto_regular))
+                .widgetColorRes(R.color.material_indigo_500)
+                .positiveColor(getResources().getColor(R.color.material_indigo_500))
                 .showListener(new DialogInterface.OnShowListener() {
                     @Override
                     public void onShow(DialogInterface dialogInterface) {
@@ -141,6 +150,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         new MaterialDialog.Builder(this)
                 .title(R.string.dialog_caught_title)
                 .content(phrase)
+                .typeface(ManagerTypeface.getTypeface(MainActivity.this, R.string.typeface_roboto_medium),
+                        ManagerTypeface.getTypeface(MainActivity.this, R.string.typeface_roboto_regular))
+                .widgetColorRes(R.color.material_indigo_500)
+                .positiveColor(getResources().getColor(R.color.material_indigo_500))
+                .negativeColor(getResources().getColor(R.color.material_indigo_500))
                 .positiveText(android.R.string.yes)
                 .negativeText(android.R.string.no)
                 .callback(new MaterialDialog.ButtonCallback() {
