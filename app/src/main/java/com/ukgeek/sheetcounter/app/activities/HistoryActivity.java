@@ -2,6 +2,7 @@ package com.ukgeek.sheetcounter.app.activities;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,8 +20,9 @@ import java.util.ArrayList;
 /**
  * Created by voronsky on 03.10.15.
  */
-public class HistoryActivity extends ActionBarActivity implements AdapterView.OnItemClickListener {
+public class HistoryActivity extends ActionBarActivity implements AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
 
+    private SwipeRefreshLayout mSrlHistory;
     private ListView mHistoryList;
     private ArrayList<SpeechItem> badWords;
     private HistoryListAdapter mAdapter;
@@ -36,11 +38,14 @@ public class HistoryActivity extends ActionBarActivity implements AdapterView.On
     }
 
     private void initView() {
+        mSrlHistory = (SwipeRefreshLayout) findViewById(R.id.srl_history);
         mHistoryList = (ListView) findViewById(R.id.historyList);
     }
 
     private void setupViews() {
         mHistoryList.setOnItemClickListener(this);
+        mSrlHistory.setColorSchemeResources(R.color.material_indigo_500, R.color.logo);
+        mSrlHistory.setOnRefreshListener(this);
     }
 
     private void getList() {
@@ -56,6 +61,7 @@ public class HistoryActivity extends ActionBarActivity implements AdapterView.On
                 mAdapter = new HistoryListAdapter(HistoryActivity.this,
                         R.layout.item_history, badWords);
                 mHistoryList.setAdapter(mAdapter);
+                mSrlHistory.setRefreshing(false);
             }
         }.execute();
     }
@@ -64,9 +70,12 @@ public class HistoryActivity extends ActionBarActivity implements AdapterView.On
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         String phrase = mAdapter.getItem(i).getPhrase();
         String text = mAdapter.getItem(i).getText();
-        int count = Utils.getCount2(phrase, text);
-        Navigator.getInstance().showDetailsActivity(HistoryActivity.this, count, phrase,
-//                Utils.makeList(text));
-                text);
+        int count = Utils.getCount(phrase, text);
+        Navigator.getInstance().showDetailsActivity(HistoryActivity.this, count, phrase, text);
+    }
+
+    @Override
+    public void onRefresh() {
+        getList();
     }
 }

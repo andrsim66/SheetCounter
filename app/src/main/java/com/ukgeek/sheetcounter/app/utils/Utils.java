@@ -20,7 +20,15 @@ import java.util.StringTokenizer;
  */
 public class Utils {
 
+
     public static int getCount(String phrase, String text) {
+        if (phrase.contains(" "))
+            return getCountPhrase(phrase, text);
+        else
+            return getCountWord(phrase, text);
+    }
+
+    public static int getCountWord(String phrase, String text) {
         int count = 0;
         List<String> list = makeList(text);
         for (int i = 0; i < list.size(); i++)
@@ -29,7 +37,7 @@ public class Utils {
         return count;
     }
 
-    public static int getCount2(String phrase, String text) {
+    public static int getCountPhrase(String phrase, String text) {
         int lastIndex = 0;
         int count = 0;
 

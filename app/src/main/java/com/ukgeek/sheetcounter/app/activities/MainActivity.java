@@ -235,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             showConfirmationDialog(text);
             mPhrase = text;
         } else {
-            int count = Utils.getCount2(mPhrase, text);
+            int count = Utils.getCount(mPhrase, text);
             Api.sendToServer(mPhrase, text);
             Navigator.getInstance().showDetailsActivity(
 //                    MainActivity.this, count, mPhrase, Utils.makeList(text));
