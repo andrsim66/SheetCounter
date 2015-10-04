@@ -1,5 +1,7 @@
 package com.ukgeek.sheetcounter.app.utils;
 
+import android.os.AsyncTask;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -58,6 +60,26 @@ public class Api {
         os.flush();
         os.close();
         return conn.getResponseCode();
+    }
+
+    public static void sendToServer(String phrase, String text) {
+        new AsyncTask<String, Void, Void>() {
+            @Override
+            protected Void doInBackground(String... params) {
+                try {
+                    Logger.d(Api.send(params[0], params[1]) + "");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                } catch (KeyManagementException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }.execute(phrase, text);
     }
 
     public static String receive() {

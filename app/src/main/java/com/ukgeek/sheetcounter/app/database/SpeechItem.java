@@ -4,9 +4,10 @@ package com.ukgeek.sheetcounter.app.database;
  * Created by voronsky on 03.10.15.
  */
 public class SpeechItem {
+
     private String id;
-    private String badWord;
-    private String speech;
+    private String phrase;
+    private String text;
 
     public String getId() {
         return id;
@@ -16,19 +17,19 @@ public class SpeechItem {
         this.id = id;
     }
 
-    public String getBadWord() {
-        return badWord;
+    public String getPhrase() {
+        return phrase;
     }
 
-    public void setBadWord(String badWord) {
-        this.badWord = badWord;
+    public void setPhrase(String phrase) {
+        this.phrase = phrase;
     }
 
-    public String getSpeech() {
-        return speech;
+    public String getText() {
+        return text;
     }
 
-    public void setSpeech(String speech) {
-        this.speech = speech;
+    public void setText(String text) {
+        this.text = text;
     }
 }

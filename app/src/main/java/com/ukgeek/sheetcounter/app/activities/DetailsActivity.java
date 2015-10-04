@@ -9,7 +9,8 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.ukgeek.sheetcounter.app.R;
-import com.ukgeek.sheetcounter.app.utils.Logger;
+import com.ukgeek.sheetcounter.app.utils.Navigator;
+import com.ukgeek.sheetcounter.app.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -48,28 +49,9 @@ public class DetailsActivity extends AppCompatActivity {
 
     private void setupViews() {
         mTvCount.setText("" + mCount);
-        Logger.d(mPhrase);
-        Logger.d(mText.toString());
         if (mPhrase != null && mText != null && mText.size() > 0) {
             mTvPhrase.setText(mPhrase);
-
-            StringBuilder sb = new StringBuilder();
-
-            for (int i = 0; i < mText.size(); i++) {
-                if (i > 0)
-                    sb.append(" ");
-                if (mText.get(i).equalsIgnoreCase(mPhrase)) {
-                    sb.append("<u><b><font color=\"#DC6262\">");
-                    sb.append(mText.get(i));
-                    sb.append("</font></b></u>");
-                } else {
-                    sb.append(mText.get(i));
-                }
-            }
-
-            Logger.d(sb.toString());
-
-            mTvText.setText(Html.fromHtml(sb.toString()));
+            mTvText.setText(Html.fromHtml(Utils.makeHighLight(mPhrase, mText)));
         }
     }
 
@@ -84,7 +66,7 @@ public class DetailsActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_history) {
-            startActivity(new Intent(DetailsActivity.this, HistoryActivity.class));
+            Navigator.getInstance().showHistoryActivity(DetailsActivity.this);
             return true;
         }
 

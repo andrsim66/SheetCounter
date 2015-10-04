@@ -28,10 +28,10 @@ public class HistoryListAdapter extends ArrayAdapter<SpeechItem> {
     }
 
     private class ViewHolder {
-        final TextView badWordHistory;
+        final TextView tvItemHistory;
 
         private ViewHolder(View view) {
-            badWordHistory = (TextView) view.findViewById(R.id.badWordHistory);
+            tvItemHistory = (TextView) view.findViewById(R.id.tv_item_history);
         }
     }
 
@@ -49,7 +49,7 @@ public class HistoryListAdapter extends ArrayAdapter<SpeechItem> {
         }
 
         SpeechItem speech = getItem(position);
-        holder.badWordHistory.setText(speech.getBadWord());
+        holder.tvItemHistory.setText(speech.getPhrase());
 
         return convertView;
     }

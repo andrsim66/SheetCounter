@@ -2,7 +2,6 @@ package com.ukgeek.sheetcounter.app.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -17,17 +16,12 @@ import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.ukgeek.sheetcounter.app.R;
-import com.ukgeek.sheetcounter.app.utils.Api;
 import com.ukgeek.sheetcounter.app.utils.Logger;
+import com.ukgeek.sheetcounter.app.utils.Navigator;
+import com.ukgeek.sheetcounter.app.utils.Utils;
 
-import org.json.JSONException;
-
-import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.StringTokenizer;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
         RecognitionListener {
@@ -189,7 +183,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mListenDialog.dismiss();
     }
 
-
     String mErrorMessage;
 
     @Override
@@ -237,94 +230,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             phrase = text;
         } else {
             this.text = text;
-            calc2();
+            int count = Utils.getCount(phrase, text);
+//            Api.sendToServer();
+            Navigator.getInstance().showDetailsActivity(MainActivity.this, count, phrase, lText);
         }
-    }
-
-    private void calc() {
-        String str = text;
-        String findStr = phrase;
-        int lastIndex = 0;
-        int count = 0;
-
-        while (lastIndex != -1) {
-
-            lastIndex = str.indexOf(findStr, lastIndex);
-
-            if (lastIndex != -1) {
-                count++;
-                lastIndex += findStr.length();
-            }
-        }
-        Logger.d("count=" + count);
-    }
-
-    private void calc2() {
-        String str = text;
-        String findStr = phrase;
-        int count = 0;
-
-        makeList(str);
-        Logger.d(lText.toString());
-
-        for (int i = 0; i < lText.size(); i++) {
-            if (lText.get(i).equalsIgnoreCase(findStr))
-                count++;
-        }
-
-        Logger.d("count=" + count);
-        showDetails(count);
-    }
-
-    private void makeList(String str) {
-        StringTokenizer st = new StringTokenizer(str, " ");
-        lText = new ArrayList<>();
-
-        while (st.hasMoreElements()) {
-            lText.add(st.nextElement().toString());
-        }
-
-    }
-
-    private void showDetails(int count) {
-//        sendToServer();
-        Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
-        intent.putExtra("count", count);
-        intent.putExtra("phrase", phrase);
-        intent.putExtra("text", lText);
-        startActivity(intent);
-    }
-
-    private void sendToServer() {
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
-                try {
-                    Logger.d(Api.send(phrase, text) + "");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                } catch (KeyManagementException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-        }.execute();
     }
 
     @Override
     public void onRmsChanged(float rmsdB) {
 //        Logger.d("onRmsChanged: " + rmsdB);
         progressBar.setProgress((int) rmsdB);
-
     }
 
     private void restartSpeech() {
-        speech.cancel();
-        speech.destroy();
+        if (speech != null) {
+            speech.cancel();
+            speech.destroy();
+        }
         speech = SpeechRecognizer.createSpeechRecognizer(this);
         speech.setRecognitionListener(this);
     }
@@ -378,11 +300,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int id = item.getItemId();
 
         if (id == R.id.action_history) {
-            phrase = "in";
-            text = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-            makeList(text);
-//            showDetails(333);
-            startActivity(new Intent(MainActivity.this, HistoryActivity.class));
+            Navigator.getInstance().showHistoryActivity(MainActivity.this);
             return true;
         }
 
