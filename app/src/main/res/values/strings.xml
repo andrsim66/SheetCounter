@@ -17,4 +17,6 @@
     <string name="typeface_roboto_light">Roboto-Light</string>
     <string name="typeface_roboto_regular">Roboto-Regular</string>
     <string name="typeface_roboto_medium">Roboto-Medium</string>
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="action_settings">Settings</string>
 </resources>

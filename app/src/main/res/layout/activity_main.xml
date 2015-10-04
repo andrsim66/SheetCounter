@@ -12,7 +12,7 @@
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
         android:layout_marginTop="16dp"
-        android:src="@drawable/logo" />
+        android:src="@drawable/logo1" />
 
     <TextView
         android:id="@+id/tv_tap"
