@@ -16,6 +16,7 @@ import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.ukgeek.sheetcounter.app.R;
+import com.ukgeek.sheetcounter.app.utils.Api;
 import com.ukgeek.sheetcounter.app.utils.Logger;
 import com.ukgeek.sheetcounter.app.utils.Navigator;
 import com.ukgeek.sheetcounter.app.utils.Utils;
@@ -27,7 +28,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         RecognitionListener {
 
     private FloatingActionButton mFabCatchPhrase;
-    private ProgressBar progressBar;
+    private ProgressBar mProgressBar;
+    private MaterialDialog mListenDialog;
+    String mErrorMessage;
 
     private SpeechRecognizer speech;
 
@@ -36,11 +39,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean isSpeech;
 
     private String phrase;
-    private String text;
-    private ArrayList<String> lText;
-
-    private MaterialDialog mListenDialog;
-    private MaterialDialog mInfoDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,18 +48,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initViews();
         setupViews();
 
-        speech = SpeechRecognizer.createSpeechRecognizer(this);
-        speech.setRecognitionListener(this);
-
-        recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE,
-                Locale.getDefault().getLanguage());
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
-                this.getPackageName());
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+//        speech = SpeechRecognizer.createSpeechRecognizer(this);
+//        speech.setRecognitionListener(this);
+//
+//        setRecognizerIntent();
     }
 
     private void initViews() {
@@ -72,18 +62,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mFabCatchPhrase.setOnClickListener(this);
     }
 
-    @Override
-    public void onClick(View view) {
-        if (view.getId() == R.id.fab_catch_sheet_phrase) {
-//            showProgress1();
-            showProgressDeterminateDialog(R.string.dialog_wait);
-        }
+    private void setRecognizerIntent() {
+        recognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE,
+                Locale.getDefault().getLanguage());
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
+                this.getPackageName());
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
     }
 
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.fab_catch_sheet_phrase)
+            showListeningDialog(R.string.dialog_wait);
+    }
 
     @Override
     public void onResume() {
         super.onResume();
+        phrase = null;
+        isSpeech = false;
+        restartSpeech();
+        setRecognizerIntent();
     }
 
     @Override
@@ -96,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    public void showProgressDeterminateDialog(final int title) {
+    public void showListeningDialog(final int title) {
         mListenDialog = new MaterialDialog.Builder(this)
                 .title(title)
                 .contentGravity(GravityEnum.CENTER)
@@ -124,26 +126,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 })
                 .build();
 
-        progressBar = mListenDialog.getProgressBar();
+        mProgressBar = mListenDialog.getProgressBar();
         Logger.d("show listen");
         mListenDialog.show();
     }
 
     private void startSpeech() {
-        progressBar.setVisibility(View.VISIBLE);
-        progressBar.setIndeterminate(true);
+        mProgressBar.setVisibility(View.VISIBLE);
+        mProgressBar.setIndeterminate(true);
         speech.startListening(recognizerIntent);
     }
 
     private void stopSpeech() {
-        progressBar.setIndeterminate(false);
-        progressBar.setVisibility(View.INVISIBLE);
+        mProgressBar.setIndeterminate(false);
+        mProgressBar.setVisibility(View.INVISIBLE);
         speech.stopListening();
     }
 
-    private void showBasic(String phrase) {
+    private void showConfirmationDialog(String phrase) {
         Logger.d("show basic");
-        mInfoDialog = new MaterialDialog.Builder(this)
+        new MaterialDialog.Builder(this)
                 .title(R.string.dialog_caught_title)
                 .content(phrase)
                 .positiveText(android.R.string.yes)
@@ -152,12 +154,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onPositive(MaterialDialog dialog) {
                         isSpeech = true;
-                        showProgressDeterminateDialog(R.string.dialog_wait);
+                        showListeningDialog(R.string.dialog_wait);
                     }
 
                     @Override
                     public void onNegative(MaterialDialog dialog) {
-                        showProgressDeterminateDialog(R.string.dialog_wait);
+                        showListeningDialog(R.string.dialog_wait);
                     }
                 })
                 .show();
@@ -166,8 +168,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBeginningOfSpeech() {
         Logger.d("onBeginningOfSpeech");
-        progressBar.setIndeterminate(false);
-        progressBar.setMax(10);
+        mProgressBar.setIndeterminate(false);
+        mProgressBar.setMax(10);
     }
 
     @Override
@@ -178,12 +180,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onEndOfSpeech() {
         Logger.d("onEndOfSpeech");
-        progressBar.setIndeterminate(true);
+        mProgressBar.setIndeterminate(true);
         if (isSpeech)
             mListenDialog.dismiss();
     }
 
-    String mErrorMessage;
 
     @Override
     public void onError(int errorCode) {
@@ -193,8 +194,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (mErrorMessage != null && mErrorMessage.length() > 0)
             mListenDialog.setContent(mErrorMessage);
-//        returnedText.setText(mErrorMessage);
-//        toggleButton.setChecked(false);
     }
 
     @Override
@@ -226,20 +225,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Logger.d(text);
         if (!isSpeech) {
             mListenDialog.dismiss();
-            showBasic(text);
+            showConfirmationDialog(text);
             phrase = text;
         } else {
-            this.text = text;
             int count = Utils.getCount(phrase, text);
-//            Api.sendToServer();
-            Navigator.getInstance().showDetailsActivity(MainActivity.this, count, phrase, lText);
+            Api.sendToServer(phrase, text);
+            Navigator.getInstance().showDetailsActivity(MainActivity.this, count, phrase, Utils.makeList(text));
         }
     }
 
     @Override
     public void onRmsChanged(float rmsdB) {
 //        Logger.d("onRmsChanged: " + rmsdB);
-        progressBar.setProgress((int) rmsdB);
+        mProgressBar.setProgress((int) rmsdB);
     }
 
     private void restartSpeech() {

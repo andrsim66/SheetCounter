@@ -45,6 +45,7 @@ public class Utils {
                 speechItem.setId(jsonObject.get("id").toString());
                 try {
                     String s = jsonObject.get("message").toString();
+                    s = s.substring(1, s.lastIndexOf("\""));
                     JSONObject message = new JSONObject(s);
                     speechItem.setPhrase(message.get("word").toString());
                     speechItem.setText(message.get("text").toString());
