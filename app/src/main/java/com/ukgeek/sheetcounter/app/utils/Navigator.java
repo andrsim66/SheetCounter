@@ -6,9 +6,6 @@ import android.content.Intent;
 import com.ukgeek.sheetcounter.app.activities.DetailsActivity;
 import com.ukgeek.sheetcounter.app.activities.HistoryActivity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by andrii on 04.10.15.
  */
@@ -28,11 +25,12 @@ public class Navigator {
     }
 
     public void showDetailsActivity(Context context, int count, String phrase,
-                                    List<String> textList) {
+                                    String textList) {
         Intent intent = new Intent(context, DetailsActivity.class);
         intent.putExtra("count", count);
         intent.putExtra("phrase", phrase);
-        intent.putExtra("text", new ArrayList<>(textList));
+//        intent.putExtra("text", new ArrayList<>(textList));
+        intent.putExtra("text", textList);
         context.startActivity(intent);
     }
 }

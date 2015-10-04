@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -236,9 +235,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             showConfirmationDialog(text);
             mPhrase = text;
         } else {
-            int count = Utils.getCount(mPhrase, text);
+            int count = Utils.getCount2(mPhrase, text);
             Api.sendToServer(mPhrase, text);
-            Navigator.getInstance().showDetailsActivity(MainActivity.this, count, mPhrase, Utils.makeList(text));
+            Navigator.getInstance().showDetailsActivity(
+//                    MainActivity.this, count, mPhrase, Utils.makeList(text));
+                    MainActivity.this, count, mPhrase, text);
         }
     }
 

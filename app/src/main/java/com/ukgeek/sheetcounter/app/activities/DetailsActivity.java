@@ -21,7 +21,8 @@ public class DetailsActivity extends AppCompatActivity {
     private TextView mTvLabel;
     private TextView mTvText;
 
-    private ArrayList<String> mText;
+//    private ArrayList<String> mText;
+    private String mText;
     private String mPhrase;
     private int mCount;
 
@@ -39,7 +40,8 @@ public class DetailsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mCount = intent.getIntExtra("count", 0);
         mPhrase = intent.getStringExtra("phrase");
-        mText = intent.getStringArrayListExtra("text");
+//        mText = intent.getStringArrayListExtra("text");
+        mText = intent.getStringExtra("text");
     }
 
     private void initViews() {
@@ -51,9 +53,10 @@ public class DetailsActivity extends AppCompatActivity {
 
     private void setupViews() {
         mTvCount.setText("" + mCount);
-        if (mPhrase != null && mText != null && mText.size() > 0) {
+        if (mPhrase != null && mText != null){
+//                && mText.size() > 0) {
             mTvPhrase.setText(mPhrase);
-            mTvText.setText(Html.fromHtml(Utils.makeHighLight(mPhrase, mText)));
+            mTvText.setText(Html.fromHtml(Utils.makePhraseHighLight(mPhrase, mText)));
         }
         Utils.setTypefaceRobotoLight(DetailsActivity.this, mTvText, mTvPhrase, mTvCount, mTvLabel);
     }

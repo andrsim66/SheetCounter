@@ -29,6 +29,20 @@ public class Utils {
         return count;
     }
 
+    public static int getCount2(String phrase, String text) {
+        int lastIndex = 0;
+        int count = 0;
+
+        while (lastIndex != -1) {
+            lastIndex = text.indexOf(phrase, lastIndex);
+            if (lastIndex != -1) {
+                count++;
+                lastIndex += phrase.length();
+            }
+        }
+        return count;
+    }
+
     public static ArrayList<String> makeList(String text) {
         StringTokenizer st = new StringTokenizer(text, " ");
         ArrayList<String> list = new ArrayList<>();
@@ -81,6 +95,12 @@ public class Utils {
             }
         }
         return sb.toString();
+    }
+
+    public static String makePhraseHighLight(String phrase, String text) {
+        String styled = "<u><b><font color=\"#DC6262\">" + phrase + "</font></b></u>";
+        text = text.replace(phrase, styled);
+        return text;
     }
 
     public static void setTypefaceRobotoRegular(Context context, TextView... textViews) {

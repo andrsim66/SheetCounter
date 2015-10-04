@@ -64,8 +64,9 @@ public class HistoryActivity extends ActionBarActivity implements AdapterView.On
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         String phrase = mAdapter.getItem(i).getPhrase();
         String text = mAdapter.getItem(i).getText();
-        int count = Utils.getCount(phrase, text);
+        int count = Utils.getCount2(phrase, text);
         Navigator.getInstance().showDetailsActivity(HistoryActivity.this, count, phrase,
-                Utils.makeList(text));
+//                Utils.makeList(text));
+                text);
     }
 }
